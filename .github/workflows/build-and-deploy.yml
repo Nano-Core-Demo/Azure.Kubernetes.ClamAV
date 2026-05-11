@@ -14,10 +14,12 @@ env:
   KUBERNETES_NODEPOOL_COMPUTE: cpu
   KUBERNETES_NAMESPACE: apps
   KUBERNETES_REPLICA_COUNT: ${{ github.ref == 'refs/heads/master' && 3 || 2 }}  
+  KUBERNETES_REPLICA_MIN_COUNT: ${{ github.ref == 'refs/heads/master' && 3 || 2 }}  
+  KUBERNETES_REPLICA_MAX_COUNT: ${{ github.ref == 'refs/heads/master' && 6 || 3 }}  
   KUBERNETES_MEMORY_REQUEST: 256Mi
   KUBERNETES_MEMORY_LIMIT: 768Mi
-  KUBERNETES_CPU_REQUEST: 150m
-  KUBERNETES_CPU_LIMIT: 450m
+  KUBERNETES_CPU_REQUEST: 100m
+  KUBERNETES_CPU_LIMIT: 300m
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -44,7 +46,10 @@ jobs:
 
           $command = @"
               set -eu
+
               helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1
+              helm repo update
+
               helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 2
           "@;
 

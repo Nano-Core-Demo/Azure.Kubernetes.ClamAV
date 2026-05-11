@@ -1,14 +1,46 @@
 nodeSelector:
   kubernetes.io/os: linux
-  nodepool.compute: system
-replicaCount: 2
+  nodepool.compute: cpu
+
+replicaCount: %KUBERNETES_REPLICA_COUNT%
+
 installCRDs: true
+
 hpa:
-  enabled: false
+  enabled: true
+  minReplicas: %KUBERNETES_REPLICA_COUNT%
+  maxReplicas: %KUBERNETES_REPLICA_COUNT_MAX%
+
+  cpu:
+    enabled: true
+    averageUtilization: %KUBERNETES_CPU_SCALING%
+
+  memory:
+    enabled: true
+    averageUtilization: %KUBERNETES_MEMORY_SCALING%
+
 resources:
   requests:
-    cpu: "100m"
-    memory: "128Mi"
+    cpu: %KUBERNETES_CPU_REQUEST%
+    memory: %KUBERNETES_MEMORY_REQUEST%
   limits:
-    cpu: "500m"
-    memory: "512Mi"
+    cpu: %KUBERNETES_CPU_LIMIT%
+    memory: %KUBERNETES_MEMORY_LIMIT%
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: %APP_NAME%
+          topologyKey: kubernetes.io/hostname
+
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: %APP_NAME%
