@@ -1,0 +1,14 @@
+nodeSelector:
+  kubernetes.io/os: linux
+  nodepool.compute: system
+replicaCount: 2
+installCRDs: true
+hpa:
+  enabled: false
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"

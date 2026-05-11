@@ -40,25 +40,11 @@ jobs:
       - name: Deploy ClamAV
         shell: pwsh
         run: |
-          $helmArgs = @(
-              "--namespace", $env:KUBERNETES_NAMESPACE,
-              "--version", $env:CHART_VERSION,
-              "--set", "nodeSelector.kubernetes\.io\/os=linux",
-              "--set", "nodeSelector.nodepool\.compute=$env:KUBERNETES_NODEPOOL_COMPUTE",
-              "--set", "installCRDs=true"
-              "--set", "replicaCount=$env:KUBERNETES_REPLICA_COUNT",
-              "--set", "hpa.enabled=false",
-              "--set", "resources.requests.cpu=$env:KUBERNETES_CPU_REQUEST",
-              "--set", "resources.requests.memory=$env:KUBERNETES_MEMORY_REQUEST",
-              "--set", "resources.limits.cpu=$env:KUBERNETES_CPU_LIMIT",
-              "--set", "resources.limits.memory=$env:KUBERNETES_MEMORY_LIMIT"
-          )
-
-          $helmCommand = @(
-              "set -eu"
-              "helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1"
-              "helm upgrade --install $env:APP_NAME wiremind/clamav " + ($helmArgs -join " ") + " || exit 2"
-          ) -join "; "
+          $helmCommand = @"
+              set -eu
+              helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1
+              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f .kubernetes/clamav-values.yaml || exit 2
+          "@
 
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
