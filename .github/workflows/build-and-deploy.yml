@@ -55,7 +55,7 @@ jobs:
           )
 
           $helmCommand = @(
-              "set -euo pipefail"
+              "set -eu"
               "helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1"
               "helm upgrade --install $env:APP_NAME wiremind/clamav " + ($helmArgs -join " ") + " || exit 2"
           ) -join "; "
