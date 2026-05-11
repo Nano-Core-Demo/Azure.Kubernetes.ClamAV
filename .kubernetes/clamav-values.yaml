@@ -19,6 +19,9 @@ hpa:
     enabled: true
     averageUtilization: %KUBERNETES_MEMORY_SCALING%
 
+metrics:
+  enabled: true
+
 resources:
   requests:
     cpu: %KUBERNETES_CPU_REQUEST%

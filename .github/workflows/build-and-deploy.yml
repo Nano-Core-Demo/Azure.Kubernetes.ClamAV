@@ -18,8 +18,10 @@ env:
   KUBERNETES_REPLICA_MAX_COUNT: ${{ github.ref == 'refs/heads/master' && 6 || 3 }}  
   KUBERNETES_MEMORY_REQUEST: 256Mi
   KUBERNETES_MEMORY_LIMIT: 768Mi
+  KUBERNETES_MEMORY_SCALING: 180
   KUBERNETES_CPU_REQUEST: 100m
   KUBERNETES_CPU_LIMIT: 300m
+  KUBERNETES_CPU_SCALING: 180
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
