@@ -63,7 +63,7 @@ jobs:
               --file .kubernetes/rabbitmq-auth-secret.tmp.yaml `
               --file .kubernetes/rabbitmq-load-definition-secret.tmp.yaml `
               --file .kubernetes/rabbitmq-podmonitor.tmp.yaml `
-              --command $helmCommand
+              --command $helmCommand `
               --output json | ConvertFrom-Json;
 
           echo $result
