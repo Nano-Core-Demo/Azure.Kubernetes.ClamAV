@@ -8,8 +8,8 @@ installCRDs: true
 
 hpa:
   enabled: true
-  minReplicas: %KUBERNETES_REPLICA_COUNT%
-  maxReplicas: %KUBERNETES_REPLICA_COUNT_MAX%
+  minReplicas: %KUBERNETES_REPLICA_MIN_COUNT%
+  maxReplicas: %KUBERNETES_REPLICA_MAX_COUNT%
 
   cpu:
     enabled: true
