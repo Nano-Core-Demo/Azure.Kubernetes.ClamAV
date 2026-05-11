@@ -59,10 +59,6 @@ jobs:
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
               -n $env:KUBERNETES_CLUSTER `
-              --file .kubernetes/rabbitmq-cluster.tmp.yaml `
-              --file .kubernetes/rabbitmq-auth-secret.tmp.yaml `
-              --file .kubernetes/rabbitmq-load-definition-secret.tmp.yaml `
-              --file .kubernetes/rabbitmq-podmonitor.tmp.yaml `
               --command $helmCommand `
               --output json | ConvertFrom-Json;
 
