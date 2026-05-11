@@ -51,7 +51,7 @@ jobs:
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
               -n $env:KUBERNETES_CLUSTER `
-              --file .kubernetes/clamav-values.tmp.yaml `
+              --file clamav-values.tmp.yaml `
               --command $command `
               --output json | ConvertFrom-Json;
 
