@@ -10,14 +10,8 @@ hpa:
   enabled: true
   minReplicas: %KUBERNETES_REPLICA_MIN_COUNT%
   maxReplicas: %KUBERNETES_REPLICA_MAX_COUNT%
-
-  cpu:
-    enabled: true
-    averageUtilization: %KUBERNETES_CPU_SCALING%
-
-  memory:
-    enabled: true
-    averageUtilization: %KUBERNETES_MEMORY_SCALING%
+  cpu: %KUBERNETES_CPU_SCALING%
+  memory: %KUBERNETES_MEMORY_SCALING%
 
 metrics:
   enabled: true
