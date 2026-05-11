@@ -3,8 +3,8 @@ on:
   push
 env:
   APP_NAME: clamav
-  VERSION: '${{ vars.VERSION }}.${{ github.run_number }}.${{ github.run_attempt }}'
   CHART_VERSION: 3.7.1
+  VERSION: '${{ vars.VERSION }}.${{ github.run_number }}.${{ github.run_attempt }}'
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }} 
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }} 
   AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }} 
@@ -40,16 +40,19 @@ jobs:
       - name: Deploy ClamAV
         shell: pwsh
         run: |
-          $helmCommand = @"
+          Get-Content .kubernetes/clamav-values.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/clamav-values.tmp.yaml;
+
+          $command = @"
               set -eu
               helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1
-              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f .kubernetes/clamav-values.yaml || exit 2
-          "@
+              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f .kubernetes/clamav-values.tmp.yaml || exit 2
+          "@;
 
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
               -n $env:KUBERNETES_CLUSTER `
-              --command $helmCommand `
+              --file .kubernetes/clamav-values.tmp.yaml `
+              --command $command `
               --output json | ConvertFrom-Json;
 
           echo $result
