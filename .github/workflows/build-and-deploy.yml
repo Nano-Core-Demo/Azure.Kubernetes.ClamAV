@@ -45,13 +45,13 @@ jobs:
           $command = @"
               set -eu
               helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1
-              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f .kubernetes/clamav-values.tmp.yaml || exit 2
+              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 2
           "@;
 
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
               -n $env:KUBERNETES_CLUSTER `
-              --file clamav-values.tmp.yaml `
+              --file .kubernetes/clamav-values.tmp.yaml `
               --command $command `
               --output json | ConvertFrom-Json;
 
