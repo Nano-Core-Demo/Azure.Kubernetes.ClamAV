@@ -45,6 +45,7 @@ jobs:
         shell: pwsh
         run: |
           Get-Content .kubernetes/clamav-values.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/clamav-values.tmp.yaml;
+          Get-Content .kubernetes/clamav-podmonitor.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/clamav-podmonitor.tmp.yaml;
 
           $command = @"
               set -eu
@@ -54,13 +55,16 @@ jobs:
 
               helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 3
 
-              kubectl rollout restart statefulset/$env:APP_NAME -n apps || exit 4
+              kubectl apply -f clamav-podmonitor.tmp.yaml || exit 4
+
+              kubectl rollout restart statefulset/$env:APP_NAME -n apps || exit 5
           "@;
 
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
               -n $env:KUBERNETES_CLUSTER `
               --file .kubernetes/clamav-values.tmp.yaml `
+              --file .kubernetes/clamav-podmonitor.tmp.yaml `
               --command $command `
               --output json | ConvertFrom-Json;
 
