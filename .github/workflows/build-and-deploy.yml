@@ -53,6 +53,8 @@ jobs:
               helm repo update
 
               helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 2
+
+              kubectl rollout restart statefulset/$env:APP_NAME-server
           "@;
 
           $result = az aks command invoke `
