@@ -54,7 +54,10 @@ jobs:
               "--set", "resources.limits.memory=$env:KUBERNETES_MEMORY_LIMIT"
           )
 
-          $helmCommand = "helm upgrade --install $env:APP_NAME wiremind/clamav " + ($helmArgs -join " ") + " || exit 1"
+          $helmCommand = @"
+              helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts;
+              helm upgrade --install $env:APP_NAME wiremind/clamav " + ($helmArgs -join " ") + " || exit 1
+          "@
 
           $result = az aks command invoke `
               -g $env:AZURE_GROUP `
