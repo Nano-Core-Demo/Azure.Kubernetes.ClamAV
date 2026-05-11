@@ -50,11 +50,11 @@ jobs:
               set -eu
 
               helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1
-              helm repo update
+              helm repo update || exit 2
 
-              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 2
+              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 3
 
-              kubectl rollout restart statefulset/$env:APP_NAME
+              kubectl rollout restart statefulset/$env:APP_NAME -n apps || exit 4
           "@;
 
           $result = az aks command invoke `
