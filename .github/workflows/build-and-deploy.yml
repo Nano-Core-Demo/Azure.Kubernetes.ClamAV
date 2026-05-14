@@ -46,13 +46,16 @@ jobs:
           Get-Content .kubernetes/clamav-values.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/clamav-values.tmp.yaml;
           Get-Content .kubernetes/clamav-service-monitor.yaml | foreach { [Environment]::ExpandEnvironmentVariables($_) } | Set-Content .kubernetes/clamav-service-monitor.tmp.yaml;
 
+          echo "aaa";
+          echo $env:APP_NAME;
+
           $command = @"
               set -eu
 
               helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts || exit 1
               helm repo update || exit 2
 
-              helm upgrade --install $env:APP_NAME wiremind/clamav --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 3
+              helm upgrade $env:APP_NAME wiremind/clamav --install --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml || exit 3
 
               kubectl apply -f clamav-service-monitor.tmp.yaml || exit 4
 
