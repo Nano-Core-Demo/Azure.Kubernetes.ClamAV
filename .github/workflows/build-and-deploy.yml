@@ -59,13 +59,13 @@ jobs:
           helm repo add wiremind https://wiremind.github.io/wiremind-helm-charts;
           helm repo update;
 
-          helm upgrade $env:APP_NAME wiremind/clamav --install --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f clamav-values.tmp.yaml;
+          helm upgrade $env:APP_NAME wiremind/clamav --install --namespace $env:KUBERNETES_NAMESPACE --version $env:CHART_VERSION -f .kubernetes/clamav-values.tmp.yaml;
           if ($LastExitCode -ne 0) 
           { 
               throw "error";
           }
     
-          kubectl apply -f clamav-service-monitor.tmp.yaml;
+          kubectl apply -f .kubernetes/clamav-service-monitor.tmp.yaml;
           if ($LastExitCode -ne 0) 
           { 
               throw "error";
