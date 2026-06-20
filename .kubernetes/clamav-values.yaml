@@ -24,6 +24,9 @@ securityContext:
     drop:
       - ALL
 
+serviceAccount:
+  automountServiceAccountToken: false
+
 resources:
   requests:
     cpu: %KUBERNETES_CPU_REQUEST%
